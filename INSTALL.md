@@ -1,5 +1,104 @@
+Pktgen - Traffic Generator powered by DPDK
+=====================================================
+
+**Pktgen is a traffic generator powered by DPDK at wire rate traffic with 64 byte frames.**
+
+** (Pktgen) Sounds like 'Packet-Gen'**
+
+---
+**Copyright &copy; \<2010-2018\>, Intel Corporation. All rights reserved.**
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+- Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+- Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in
+the documentation and/or other materials provided with the
+distribution.
+
+- Neither the name of Intel Corporation nor the names of its
+contributors may be used to endorse or promote products derived
+from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+OF THE POSSIBILITY OF SUCH DAMAGE.
+
+SPDX-License-Identifier: BSD-3-Clause
+
+Pktgen: Created 2010-2018 by Keith Wiles @ Intel.com
+
+---
 
 # Installation
+
+## Environment
+
+INSTALL for setting up Pktgen with DPDK on Ubuntu 10.04 to 16.10 desktop and CentOS, 
+it should work on most Linux systems as long as the kernel has hugeTLB page support.
+
+**Note:**
+
+Tested with Ubuntu 13.10 and up to 16.10 kernel versions
+Linux 3.5.0-25-generic #39-Ubuntu SMP Mon Feb 25 18:26:58 UTC 2013 x86_64
+
+Tested with CentOS 7.5.1804
+Linux 3.10.0-862.14.4.el7 Sat 24 Nov 04:07:00 UTC 2018 x86_64
+
+I am using Ubuntu 16.10 x86_64 (64 bit support) for running Pktgen-DPDK on a
+Crownpass Dual socket board running at 2.4GHz with 32GB of ram 16GB per socket.
+The current kernel version is 4.4.0-66-generic (as of 2018-04-01) support, but should
+work on just about any new Linux kernel version.
+
+Currently using as of 2018-04-01 Ubuntu 16.10 Kernel 4.4.0-66-generic system.
+
+To get hugeTLB page support your Linux kernel must be at least 2.6.33 and in the
+DPDK documents it talks about how you can upgrade your Linux kernel.
+
+Here is another document on how to upgrade your Linux kernel.
+Ubuntu 10.04 is 2.6.32 by default so upgraded to kernel 2.6.34 using this HOWTO:
+http://usablesoftware.wordpress.com/2010/05/26/switch-to-a-newer-kernel-in-ubuntu-10-04/
+
+The pktgen output display needs 132 columns and about 42 lines to display
+correctly. I am using an xterm of 132x42, but you can have a larger display
+and maybe a bit smaller. If you are displaying more then 4-6 ports then you
+will need a wider display. Pktgen allows you to view a set of ports if they
+do not all fit on the screen at one time via the 'page' command.
+
+Type 'help' at the 'Pktgen>' prompt to see the complete Pktgen command line
+commands. Pktgen uses VT100 control codes or escape codes to display the screens,
+which means your terminal must support VT100. The Hyperterminal in windows is not
+going to work for Pktgen as it has a few problems with VT100 codes.
+
+Pktgen has a number of modes to send packets single, range, random, sequeue and
+PCAP modes. Each mode has its own set of packet buffers and you must configure
+each mode to work correctly. The single packet mode is the information displayed
+at startup screen or when using the 'page main or page 0' command. The other
+screens can be accessed using 'page seq|range|rnd|pcap|stats' command.
+
+The pktgen program as built can send up to 16 packets per port in a sequence
+and you can configure a port using the 'seq' pktgen command. A script file
+can be loaded from the shell command line via the -f option and you can 'load'
+a script file from within pktgen as well.
+
+In the BIOS make sure the HPET High Precision Event Timer is enabled. Also
+make sure hyper-threading is enabled.
+
+**Note:** On a 10GB NIC if the transceivers are not attached the screen updates 
+will go very slow.
 
 ## Install prerequisites
 Make sure you have the Linux kernel headers installed as DPDK requires them to build
@@ -250,182 +349,7 @@ Next we build pktgen:
     # cd <PktgenInstallDir>
     # make
 
-You should now have pktgen built. To get started, see README.md. run pktgen type `sudo -E ./tools/run.sh`.
-`run.sh` is a script designed to help you with the command line options of pktgen. 
-You may need to modify this script for your system and configuration.
+You should now have pktgen built.
 
-    # cat ./tools/run.sh
-    #!/bin/bash
+To get started, see README.md. 
 
-    #rkwiles@rkwiles-desk:~/projects/intel/dpdk$ lspci |grep Ether
-    #06:00.0 Ethernet controller: Intel Corporation Ethernet Converged Network Adapter X520-Q1 (rev 01)
-    #06:00.1 Ethernet controller: Intel Corporation Ethernet Converged Network Adapter X520-Q1 (rev 01)
-    #08:00.0 Ethernet controller: Intel Corporation Ethernet Converged Network Adapter X520-Q1 (rev 01)
-    #08:00.1 Ethernet controller: Intel Corporation Ethernet Converged Network Adapter X520-Q1 (rev 01)
-    #09:00.0 Ethernet controller: Intel Corporation I350 Gigabit Network Connection (rev 01)
-    #09:00.1 Ethernet controller: Intel Corporation I350 Gigabit Network Connection (rev 01)
-    #83:00.1 Ethernet controller: Intel Corporation DH8900CC Null Device (rev 21)
-    #87:00.0 Ethernet controller: Intel Corporation Ethernet Converged Network Adapter X520-Q1 (rev 01)
-    #87:00.1 Ethernet controller: Intel Corporation Ethernet Converged Network Adapter X520-Q1 (rev 01)
-    #89:00.0 Ethernet controller: Intel Corporation Ethernet Converged Network Adapter X520-Q1 (rev 01)
-    #89:00.1 Ethernet controller: Intel Corporation Ethernet Converged Network Adapter X520-Q1 (rev 01)
-
-if [ $name == "rkwiles-supermicro" ]; then
-./app/app/${target}/pktgen -l 4-12 -n 3 --proc-type auto --socket-mem 512,512 --file-prefix pg -b 06:00.0 -b 06:00.1 -b 08:00.0 -b 08:00.1 -b 09:00.0 -b 09:00.1 -b 83:00.1 -- -T -P -m "[5:7].0, [6:8].1, [9:11].2, [10:12].3" -f themes/black-yellow.theme
-fi
-``
-** Note: The '-m NNN' in the DPDK arguments is to have DPDK allocate 512 megs of memory.
- The '--socket-mem 256,156' DPDK command will allocate 256M from each CPU (two in this
- case). Do not use the '-m NNN' and '--socket-mem NN,NN' commands on the same command
- line.
-
-The pktgen program follows the same format as a standard DPDK linuxapp, meaning
-the first set of arguments '-l 0-4' are the standard DPDK arguments. This option
-defines the number of logical cores to be used by pktgen. The 1f states 5 lcores
-are used and the '3c' is just a bit array for each lcore to be used. The '-P' enables
-promiscuous mode on all ports if you need that support. The '-m "..."' sets up the
-port to lcore mapping for pktgen.
-
-The second half of the command line followed by the '--' is pktgen specific
-options.
-
-The pktgen requires 2 logical cores for a minimum system. The first lcore 0 used
-for pktgen command line and is used for timers also displaying the text on the
-screen and lcores 1-n are used to do the packet receive and transmits along with
-anything else related to packets. You do not need to start at lcore zero, but the first
-lcore in the bitmap from in the least signification bit location is the display and
-timer lcore used by pktgen.
-
-The -m format now allows the developer to have different lcores for rx and tx
-instead of rx/tx on the same lcore. The above format of {1:3}.0 states to use
-lcore 1 for rx and lcore 3 for tx on port 0. Make sure you select different
-lcores for the rx and tx so that only a single rx or tx function is on
-a single physical core. If you pick the rx/tx functions on different lcores, but
-on the same physical core you will not be able to get the performance you want as the
-single physical core will be trying to do both Rx/Tx functions.
-
-The '-n 2' is a required argument for DPDK and denotes the number of memory channels.
-
-*** New setup and run python script with config files ***
-
-Using the new tools/run.py script to setup and run pktgen with different configurations. The configuration files are located in the cfg directory with filenames ending in .cfg.
-
-To use a configuration file;
-``
-$ ./tools/run.py -s default  # to setup the ports and attach them to DPDK (only needed once per boot)
-
-$ ./tools/run.py default     # Run the default configuration
-``
-The configuration files are python scritps or a set of variables that run.py uses to initialize and run pktgen.
-Here is an example of the default.cfg file:
-
-``
-# Setup configuration
-setup = {
-	'devices': [
-		'04:00.0 04:00.1 04:00.2 04:00.3',
-		'81:00.0 81:00.1 81:00.2 81:00.3',
-		'82:00.0 83:00.0'
-		],
-
-	'opts': [
-		'-b igb_uio'
-		]
-	}
-
-# Run command and options
-run = {
-	'dpdk': [
-		'-l 8,9-16',
-		'-n 4',
-		'--proc-type auto',
-		'--log-level 7',
-		'--socket-mem 2048,2048',
-		'--file-prefix pg'
-		],
-
-	'blacklist': [
-		'-b 05:00.0 -b 05:00.1',
-		'-b 04:00.0 -b 04:00.1 -b 04:00.2 -b 04:00.3',
-		#'-b 81:00.0 -b 81:00.1 -b 81:00.2 -b 81:00.3',
-		'-b 82:00.0 -b 83:00.0'
-		],
-
-	'pktgen': [
-		'-T',
-		'-P',
-		'--crc-strip',
-		'-m [9:10].0',
-		'-m [11:12].1',
-		'-m [13:14].2',
-		'-m [15:16].3'
-		],
-
-	'misc': [
-		'-f themes/black-yellow.theme'
-		]
-	}
-``
-
-``
-Usage: ./app/pktgen -l CORELIST -n NUM [-m NB] [-r NUM] [-b <domain:bus:devid.func>][--proc-type primary|secondary|auto]
-
-Copyright (c) <2010-2018>, Intel Corporation. All rights reserved. Powered by DPDK
-./app/app/x86_64-dnet-linuxapp-gcc/pktgen: invalid option -- 'x'
-EAL: Detected 72 lcore(s)
-./app/app/x86_64-dnet-linuxapp-gcc/pktgen: invalid option -- 'x'
-
-Usage: ./app/app/x86_64-dnet-linuxapp-gcc/pktgen [options]
-
-EAL common options:
-  -c COREMASK         Hexadecimal bitmask of cores to run on
-  -l CORELIST         List of cores to run on
-                      The argument format is <c1>[-c2][,c3[-c4],...]
-                      where c1, c2, etc are core indexes between 0 and 128
-  --lcores COREMAP    Map lcore set to physical cpu set
-                      The argument format is
-                            '<lcores[@cpus]>[<,lcores[@cpus]>...]'
-                      lcores and cpus list are grouped by '(' and ')'
-                      Within the group, '-' is used for range separator,
-                      ',' is used for single number separator.
-                      '( )' can be omitted for single element group,
-                      '@' can be omitted if cpus and lcores have the same value
-  --master-lcore ID   Core ID that is used as master
-  -n CHANNELS         Number of memory channels
-  -m MB               Memory to allocate (see also --socket-mem)
-  -r RANKS            Force number of memory ranks (don't detect)
-  -b, --pci-blacklist Add a PCI device in black list.
-                      Prevent EAL from using this PCI device. The argument
-                      format is <domain:bus:devid.func>.
-  -w, --pci-whitelist Add a PCI device in white list.
-                      Only use the specified PCI devices. The argument format
-                      is <[domain:]bus:devid.func>. This option can be present
-                      several times (once per device).
-                      [NOTE: PCI whitelist cannot be used with -b option]
-  --vdev              Add a virtual device.
-                      The argument format is <driver><id>[,key=val,...]
-                      (ex: --vdev=net_pcap0,iface=eth2).
-  -d LIB.so|DIR       Add a driver or driver directory
-                      (can be used multiple times)
-  --vmware-tsc-map    Use VMware TSC map instead of native RDTSC
-  --proc-type         Type of this process (primary|secondary|auto)
-  --syslog            Set syslog facility
-  --log-level         Set default log level
-  -v                  Display version information on startup
-  -h, --help          This help
-
-EAL options for DEBUG use only:
-  --huge-unlink       Unlink hugepage files after init
-  --no-huge           Use malloc instead of hugetlbfs
-  --no-pci            Disable PCI
-  --no-hpet           Disable HPET
-  --no-shconf         No shared config (mmap'd files)
-
-EAL Linux options:
-  --socket-mem        Memory to allocate on sockets (comma separated values)
-  --huge-dir          Directory where hugetlbfs is mounted
-  --file-prefix       Prefix for hugepage filenames
-  --base-virtaddr     Base virtual address
-  --create-uio-dev    Create /dev/uioX (usually done by hotplug)
-  --vfio-intr         Interrupt mode for VFIO (legacy|msi|msix)
-  --xen-dom0          Support running on Xen dom0 without hugetlbfs

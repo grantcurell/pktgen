@@ -60,7 +60,11 @@ else
 	nic_bind=${sdk}/tools/dpdk_nic_bind.py
 fi
 name=`uname -n`
-if [ $name == "rkwiles-DESK1.intel.com" ]; then
-	${Sudo} -E ${nic_bind} -b igb_uio 04:00.0 04:00.1 04:00.2 04:00.3 81:00.0 81:00.1 81:00.2 81:00.3 82:00.0 83:00.0
-fi
-${nic_bind} --status
+
+cat << EOF
+All done! Next you need to configure your NIC with the command: ${nic_bind}
+Once you have finished doing that you can edit this setup file and replace this
+text with the command you used to configure your NIC. That way you just have to
+run this setup script after reboot.
+EOF
+
