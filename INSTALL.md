@@ -133,12 +133,14 @@ Get the DPDK and pktgen source code from github.com or dpdk.org repo via:
     # cd <InstallDir>
     # git clone git://dpdk.org/pktgen-dpdk.git
 
-**NOTE:** While on the dpdk site you must also pull down the dpdk kit itself. git://dpdk.org/dpdk
+**Note:** While on the dpdk site you must also pull down the dpdk kit itself. git://dpdk.org/dpdk
 
 ## Use the Quick Start Script to Install dpdk Toolkit and Configure Host
 
 You can setup all relevant settings manually, but I recommend you use the quick 
 start setup script detailed [here](https://doc.dpdk.org/guides/linux_gsg/quick_start.html).
+
+Most commonly you will need to use options 15,18, and 24
 
 ## Manually Configure dpdk Toolkit
 
