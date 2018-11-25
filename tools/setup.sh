@@ -63,6 +63,7 @@ name=`uname -n`
 
 cat << EOF
 All done! Next you need to configure your NIC with the command: ${nic_bind}
+You probably want something like: ${nic_bind} --bind=igb_uio <interface>
 Once you have finished doing that you can edit this setup file and replace this
 text with the command you used to configure your NIC. That way you just have to
 run this setup script after reboot.

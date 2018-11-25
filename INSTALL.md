@@ -349,7 +349,5 @@ Next we build pktgen:
     # cd <PktgenInstallDir>
     # make
 
-You should now have pktgen built.
-
-To get started, see README.md. 
+You should now have pktgen built. To get started, see README.md. 
 
